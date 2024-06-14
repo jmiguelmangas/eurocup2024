@@ -1,3 +1,19 @@
+import pandas as pd
+import json
+# Cargar el archivo CSV
+file_path = "./data/euro2024_players.csv"
+players_df = pd.read_csv(file_path)
+
+def load_players_by_team(players_df):
+    teams_dict = {}
+    for index, row in players_df.iterrows():
+        team_name = row['Country']
+        player = Player(row['Name'], row['Position'])
+        if team_name not in teams_dict:
+            teams_dict[team_name] = []
+        teams_dict[team_name].append(player)
+    return teams_dict
+
 flags = {
     "Germany": "https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg",
     "Scotland": "https://upload.wikimedia.org/wikipedia/commons/1/10/Flag_of_Scotland.svg",
@@ -25,6 +41,43 @@ flags = {
     "CzechRepublic": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Flag_of_the_Czech_Republic.svg"
 }
 
+
+class Eurocup:
+    def __init__(self, groups, groupmatches):
+        self.groups = groups
+        self.groupmatches = groupmatches
+        self.eliminatorydraw = []
+
+    def determine_qualifiers(self):
+        firsts = []
+        seconds = []
+        thirds = []
+
+        for group in self.groups:
+            sorted_teams = sorted(group.teams, key=lambda x: (x.points, x.goalsScored - x.goalsReceived, x.goalsScored), reverse=True)
+            firsts.append(sorted_teams[0])
+            seconds.append(sorted_teams[1])
+            thirds.append(sorted_teams[2])
+
+        best_thirds = sorted(thirds, key=lambda x: (x.points, x.goalsScored - x.goalsReceived, x.goalsScored), reverse=True)[:3]
+
+        return firsts, seconds, best_thirds
+
+    def organize_eliminatory(self):
+        firsts, seconds, best_thirds = self.determine_qualifiers()
+
+        # Configure the eliminatory draw based on the image
+        self.eliminatorydraw = [
+            (firsts[0], seconds[1]),  # 1st A vs 2nd B
+            (firsts[1], best_thirds[0]),  # 1st B vs 3rd: A/D/E/F
+            (firsts[2], best_thirds[1]),  # 1st C vs 3rd: D/E/F
+            (firsts[3], seconds[2]),  # 1st D vs 2nd E
+            (firsts[4], seconds[3]),  # 1st E vs 2nd D
+            (firsts[5], best_thirds[2]),  # 1st F vs 3rd: A/B/C
+            (seconds[0], seconds[4]),  # 2nd A vs 2nd C
+            (seconds[5], firsts[0])   # 2nd F vs 1st A
+        ]
+
 class Player:
     def __init__(self, name, position):
         self.name = name
@@ -32,10 +85,11 @@ class Player:
         self.goalsScoredPlayer = 0
 
 class Team:
-    def __init__(self, name, players=None):
+    def __init__(self, name, flag, players=None):
         if players is None:
             players = []
         self.name = name
+        self.flag = flag
         self.points = 0
         self.goalsScored = 0
         self.goalsReceived = 0
@@ -69,7 +123,6 @@ class Game:
         for player in self.scorers_team2:
             player.goalsScoredPlayer += 1
 
-
 class Group:
     def __init__(self, name, teams):
         self.name = name
@@ -78,111 +131,115 @@ class Group:
     def display_standings(self):
         sorted_teams = sorted(self.teams, key=lambda x: (x.points, x.goalsScored - x.goalsReceived, x.goalsScored), reverse=True)
         for team in sorted_teams:
-            print(f"{team.name}: Points={team.points}, Goals Scored={team.goalsScored}, Goals Received={team.goalsReceived}, Goal Difference={team.goalsScored - team.goalsReceived}")
+            print(f"{team.name} ({team.flag}): Points={team.points}, Goals Scored={team.goalsScored}, Goals Received={team.goalsReceived}, Goal Difference={team.goalsScored - team.goalsReceived}")
 
-Germany = Team("Germany", flags["Germany"])
-Scotland = Team("Scotland", flags["Scotland"])
-Switzerland = Team("Switzerland", flags["Switzerland"])
-Hungary = Team("Hungary", flags["Hungary"])
-Spain = Team("Spain", flags["Spain"])
-Croatia = Team("Croatia", flags["Croatia"])
-Albania = Team("Albania", flags["Albania"])
-Italy = Team("Italy", flags["Italy"])
-Slovenia = Team("Slovenia", flags["Slovenia"])
-Denmark = Team("Denmark", flags["Denmark"])
-Serbia = Team("Serbia", flags["Serbia"])
-England = Team("England", flags["England"])
-Poland = Team("Poland", flags["Poland"])
-Netherlands = Team("Netherlands", flags["Netherlands"])
-Austria = Team("Austria", flags["Austria"])
-France = Team("France", flags["France"])
-Belgium = Team("Belgium", flags["Belgium"])
-Slovakia = Team("Slovakia", flags["Slovakia"])
-Romania = Team("Romania", flags["Romania"])
-Ukraine = Team("Ukraine", flags["Ukraine"])
-Turkey = Team("Turkey", flags["Turkey"])
-Georgia = Team("Georgia", flags["Georgia"])
-Portugal = Team("Portugal", flags["Portugal"])
-CzechRepublic = Team("CzechRepublic", flags["CzechRepublic"])
 
-groupA = Group("A", [Germany, Scotland, Switzerland, Hungary])
-groupB = Group("B", [Spain, Croatia, Albania, Italy])
-groupC = Group("C", [Slovenia, Denmark, Serbia, England])
-groupD = Group("D", [Poland, Netherlands, Austria, France])
-groupE = Group("E", [Belgium, Slovakia, Romania, Ukraine])
-groupF = Group("F", [Turkey, Georgia, Portugal, CzechRepublic])
+# Cargar los jugadores por equipo
+players_by_team = load_players_by_team(players_df)
 
+# Crear equipos con sus banderas y jugadores
+teams = {
+    "Germany": Team("Germany", flags["Germany"], players_by_team["Germany"]),
+    "Scotland": Team("Scotland", flags["Scotland"], players_by_team["Scotland"]),
+    "Switzerland": Team("Switzerland", flags["Switzerland"], players_by_team["Switzerland"]),
+    "Hungary": Team("Hungary", flags["Hungary"], players_by_team["Hungary"]),
+    "Spain": Team("Spain", flags["Spain"], players_by_team["Spain"]),
+    "Croatia": Team("Croatia", flags["Croatia"], players_by_team["Croatia"]),
+    "Albania": Team("Albania", flags["Albania"], players_by_team["Albania"]),
+    "Italy": Team("Italy", flags["Italy"], players_by_team["Italy"]),
+    "Slovenia": Team("Slovenia", flags["Slovenia"], players_by_team["Slovenia"]),
+    "Denmark": Team("Denmark", flags["Denmark"], players_by_team["Denmark"]),
+    "Serbia": Team("Serbia", flags["Serbia"], players_by_team["Serbia"]),
+    "England": Team("England", flags["England"], players_by_team["England"]),
+    "Poland": Team("Poland", flags["Poland"], players_by_team["Poland"]),
+    "Netherlands": Team("Netherlands", flags["Netherlands"], players_by_team["Netherlands"]),
+    "Austria": Team("Austria", flags["Austria"], players_by_team["Austria"]),
+    "France": Team("France", flags["France"], players_by_team["France"]),
+    "Belgium": Team("Belgium", flags["Belgium"], players_by_team["Belgium"]),
+    "Slovakia": Team("Slovakia", flags["Slovakia"], players_by_team["Slovakia"]),
+    "Romania": Team("Romania", flags["Romania"], players_by_team["Romania"]),
+    "Ukraine": Team("Ukraine", flags["Ukraine"], players_by_team["Ukraine"]),
+    "Turkey": Team("Turkey", flags["Turkey"], players_by_team["Turkiye"]),
+    "Georgia": Team("Georgia", flags["Georgia"], players_by_team["Georgia"]),
+    "Portugal": Team("Portugal", flags["Portugal"], players_by_team["Portugal"]),
+    "CzechRepublic": Team("CzechRepublic", flags["CzechRepublic"], players_by_team["Czech Republic"])
+}
+# Creación de los grupos
+groupA = Group("A", [teams["Germany"], teams["Scotland"], teams["Switzerland"], teams["Hungary"]])
+groupB = Group("B", [teams["Spain"], teams["Croatia"], teams["Albania"], teams["Italy"]])
+groupC = Group("C", [teams["Slovenia"], teams["Denmark"], teams["Serbia"], teams["England"]])
+groupD = Group("D", [teams["Poland"], teams["Netherlands"], teams["Austria"], teams["France"]])
+groupE = Group("E", [teams["Belgium"], teams["Slovakia"], teams["Romania"], teams["Ukraine"]])
+groupF = Group("F", [teams["Turkey"], teams["Georgia"], teams["Portugal"], teams["CzechRepublic"]])
+
+AllGroups = [groupA, groupB, groupC, groupD, groupE, groupF]
 
 # Partidos del grupo A
 games_groupA = [
-    Game(Germany, Scotland, "0-0"),
-    Game(Switzerland, Hungary, "0-0"),
-    Game(Scotland, Switzerland, "0-0"),
-    Game(Hungary, Germany, "0-0"),
-    Game(Germany, Switzerland, "0-0"),
-    Game(Scotland, Hungary, "0-0")
+    Game(teams["Germany"], teams["Scotland"], "0-0"),
+    Game(teams["Switzerland"], teams["Hungary"], "0-0"),
+    Game(teams["Scotland"], teams["Switzerland"], "0-0"),
+    Game(teams["Hungary"], teams["Germany"], "0-0"),
+    Game(teams["Germany"], teams["Switzerland"], "0-0"),
+    Game(teams["Scotland"], teams["Hungary"], "0-0")
 ]
 
 # Partidos del grupo B
 games_groupB = [
-    Game(Spain, Croatia, "0-0"),
-    Game(Italy, Albania, "0-0"),
-    Game(Croatia, Albania, "0-0"),
-    Game(Italy, Spain, "0-0"),
-    Game(Spain, Albania, "0-0"),
-    Game(Croatia, Italy, "0-0")
+    Game(teams["Spain"], teams["Croatia"], "0-0"),
+    Game(teams["Italy"], teams["Albania"], "0-0"),
+    Game(teams["Croatia"], teams["Albania"], "0-0"),
+    Game(teams["Italy"], teams["Spain"], "0-0"),
+    Game(teams["Spain"], teams["Albania"], "0-0"),
+    Game(teams["Croatia"], teams["Italy"], "0-0")
 ]
 
 # Partidos del grupo C
 games_groupC = [
-    Game(Slovenia, Denmark, "0-0"),
-    Game(Serbia, England, "0-0"),
-    Game(England, Slovenia, "0-0"),
-    Game(Denmark, Serbia, "0-0"),
-    Game(Serbia, Slovenia, "0-0"),
-    Game(England, Denmark, "0-0")
+    Game(teams["Slovenia"], teams["Denmark"], "0-0"),
+    Game(teams["Serbia"], teams["England"], "0-0"),
+    Game(teams["England"], teams["Slovenia"], "0-0"),
+    Game(teams["Denmark"], teams["Serbia"], "0-0"),
+    Game(teams["Serbia"], teams["Slovenia"], "0-0"),
+    Game(teams["England"], teams["Denmark"], "0-0")
 ]
 
 # Partidos del grupo D
 games_groupD = [
-    Game(Poland, Netherlands, "0-0"),
-    Game(Austria, France, "0-0"),
-    Game(France, Poland, "0-0"),
-    Game(Netherlands, Austria, "0-0"),
-    Game(Austria, Poland, "0-0"),
-    Game(France, Netherlands, "0-0")
+    Game(teams["Poland"], teams["Netherlands"], "0-0"),
+    Game(teams["Austria"], teams["France"], "0-0"),
+    Game(teams["France"], teams["Poland"], "0-0"),
+    Game(teams["Netherlands"], teams["Austria"], "0-0"),
+    Game(teams["Austria"], teams["Poland"], "0-0"),
+    Game(teams["France"], teams["Netherlands"], "0-0")
 ]
 
 # Partidos del grupo E
 games_groupE = [
-    Game(Belgium, Slovakia, "0-0"),
-    Game(Romania, Ukraine, "0-0"),
-    Game(Ukraine, Slovakia, "0-0"),
-    Game(Belgium, Romania, "0-0"),
-    Game(Slovakia, Romania, "0-0"),
-    Game(Ukraine, Belgium, "0-0")
+    Game(teams["Belgium"], teams["Slovakia"], "0-0"),
+    Game(teams["Romania"], teams["Ukraine"], "0-0"),
+    Game(teams["Ukraine"], teams["Slovakia"], "0-0"),
+    Game(teams["Belgium"], teams["Romania"], "0-0"),
+    Game(teams["Slovakia"], teams["Romania"], "0-0"),
+    Game(teams["Ukraine"], teams["Belgium"], "0-0")
 ]
 
 # Partidos del grupo F
 games_groupF = [
-    Game(Turkey, Georgia, "0-0"),
-    Game(Portugal, CzechRepublic, "0-0"),
-    Game(Georgia, CzechRepublic, "0-0"),
-    Game(Portugal, Turkey, "0-0"),
-    Game(Turkey, CzechRepublic, "0-0"),
-    Game(Portugal, Georgia, "0-0")
+    Game(teams["Turkey"], teams["Georgia"], "0-0"),
+    Game(teams["Portugal"], teams["CzechRepublic"], "0-0"),
+    Game(teams["Georgia"], teams["CzechRepublic"], "0-0"),
+    Game(teams["Portugal"], teams["Turkey"], "0-0"),
+    Game(teams["Turkey"], teams["CzechRepublic"], "0-0"),
+    Game(teams["Portugal"], teams["Georgia"], "0-0")
 ]
+# Crear una instancia de Eurocup con los grupos y los partidos de grupo
+eurocup2024 = Eurocup(AllGroups, [games_groupA, games_groupB, games_groupC, games_groupD, games_groupE, games_groupF])
+
+# Determinar los equipos clasificados y organizar el cuadro eliminatorio
+eurocup2024.organize_eliminatory()
 
 # Mostrar la clasificación de cada grupo
-print("Group A Standings:")
-groupA.display_standings()
-print("\nGroup B Standings:")
-groupB.display_standings()
-print("\nGroup C Standings:")
-groupC.display_standings()
-print("\nGroup D Standings:")
-groupD.display_standings()
-print("\nGroup E Standings:")
-groupE.display_standings()
-print("\nGroup F Standings:")
-groupF.display_standings()
+for group in eurocup2024.groups:
+    print(f"\n{group.name} Standings:")
+    group.display_standings()
