@@ -1,0 +1,62 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #143cda;
+    color: white;
+  }
+  
+  .team-info {
+    text-align: center;
+    color: white;
+    background-color: #143cda;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .team-flag {
+    width: 150px; /* Ajusta este tamaño según tus necesidades */
+    height: 150px;
+    border-radius: 50%; /* Hace la bandera redonda */
+    border: 3px solid white; /* Opcional: añade un borde blanco */
+  }
+  
+  .players-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas */
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .position-group {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .player-list, .scorer-list {
+    list-style-type: none;
+    padding: 0;
+    text-align: left; /* Justificar a la izquierda */
+  }
+  
+  .player-name {
+    margin: 5px 0;
+  }
+  
+  .top-scorers {
+    margin-top: 20px;
+  }
+  
+  .back-link {
+    margin-top: 20px;
+  }
+  
+  .back-button {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    background-color: #143cda;
+    border-radius: 5px;
+    border: 1px solid white;
+  }
+  
