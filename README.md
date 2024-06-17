@@ -23,7 +23,7 @@ This project is a comprehensive web application designed to track the UEFA Euro 
    cd euro2024-tracker
 
 
-Setup the backend
+## Setup the backend
 
 Create a virtual environment and activate it:
 bash
@@ -38,7 +38,8 @@ Start the Flask server:
 bash
 Copiar código
 python server.py
-Setup the frontend
+
+## Setup the frontend
 
 Navigate to the frontend directory:
 bash
@@ -53,21 +54,25 @@ bash
 Copiar código
 npm start
 Access the application
+Open your web browser and navigate to http://localhost:3000
 
-Open your web browser and navigate to http://localhost:3000.
-Project Structure
+## Project Structure
 backend: Contains the Flask server and related files.
 frontend: Contains the React application and related files.
 data: Contains data files such as player information and match results.
-Usage
+
+## Usage
 View Teams: Click on a team to view detailed information about the players.
 Update Match Results: Enter match results to update the standings.
 View Standings: Standings are updated automatically based on the entered match results.
-Contributing
+
+## Contributing
+
 Fork the repository
 Create a new feature branch (git checkout -b feature/YourFeature)
 Commit your changes (git commit -m 'Add some feature')
 Push to the branch (git push origin feature/YourFeature)
 Open a pull request
-License
+
+## License
 This project is licensed under the MIT License.git 

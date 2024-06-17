@@ -18,7 +18,7 @@
     "Group C": [
       {"team1": "Slovenia", "team2": "Denmark", "score": "1-1"},
       {"team1": "Serbia", "team2": "England", "score": "0-1"},
-      {"team1": "England", "team2": "Slovenia", "score": null},
+      {"team1": "England", "team2": "Slovenia", "score": "1-0"},
       {"team1": "Denmark", "team2": "Serbia", "score": null},
       {"team1": "Serbia", "team2": "Slovenia", "score": null},
       {"team1": "England", "team2": "Denmark", "score": null}
