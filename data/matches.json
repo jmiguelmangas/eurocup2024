@@ -1,0 +1,51 @@
+{
+    "Group A": [
+      {"team1": "Germany", "team2": "Scotland", "score": "5-1"},
+      {"team1": "Switzerland", "team2": "Hungary", "score": "3-1"},
+      {"team1": "Scotland", "team2": "Switzerland", "score": null},
+      {"team1": "Hungary", "team2": "Germany", "score": null},
+      {"team1": "Germany", "team2": "Switzerland", "score": null},
+      {"team1": "Scotland", "team2": "Hungary", "score": null}
+    ],
+    "Group B": [
+      {"team1": "Spain", "team2": "Croatia", "score": "3-0"},
+      {"team1": "Italy", "team2": "Albania", "score": "2-1"},
+      {"team1": "Croatia", "team2": "Albania", "score": null},
+      {"team1": "Italy", "team2": "Spain", "score": null},
+      {"team1": "Spain", "team2": "Albania", "score": null},
+      {"team1": "Croatia", "team2": "Italy", "score": null}
+    ],
+    "Group C": [
+      {"team1": "Slovenia", "team2": "Denmark", "score": "1-1"},
+      {"team1": "Serbia", "team2": "England", "score": "0-1"},
+      {"team1": "England", "team2": "Slovenia", "score": null},
+      {"team1": "Denmark", "team2": "Serbia", "score": null},
+      {"team1": "Serbia", "team2": "Slovenia", "score": null},
+      {"team1": "England", "team2": "Denmark", "score": null}
+    ],
+    "Group D": [
+      {"team1": "Poland", "team2": "Netherlands", "score": "1-2"},
+      {"team1": "Austria", "team2": "France", "score": null},
+      {"team1": "France", "team2": "Poland", "score": null},
+      {"team1": "Netherlands", "team2": "Austria", "score": null},
+      {"team1": "Austria", "team2": "Poland", "score": null},
+      {"team1": "France", "team2": "Netherlands", "score": null}
+    ],
+    "Group E": [
+      {"team1": "Belgium", "team2": "Slovakia", "score": null},
+      {"team1": "Romania", "team2": "Ukraine", "score": null},
+      {"team1": "Ukraine", "team2": "Slovakia", "score": null},
+      {"team1": "Belgium", "team2": "Romania", "score": null},
+      {"team1": "Slovakia", "team2": "Romania", "score": null},
+      {"team1": "Ukraine", "team2": "Belgium", "score": null}
+    ],
+    "Group F": [
+      {"team1": "Turkey", "team2": "Georgia", "score": null},
+      {"team1": "Portugal", "team2": "CzechRepublic", "score": null},
+      {"team1": "Georgia", "team2": "CzechRepublic", "score": null},
+      {"team1": "Portugal", "team2": "Turkey", "score": null},
+      {"team1": "Turkey", "team2": "CzechRepublic", "score": null},
+      {"team1": "Portugal", "team2": "Georgia", "score": null}
+    ]
+  }
+  
